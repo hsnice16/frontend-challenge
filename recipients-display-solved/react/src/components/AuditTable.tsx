@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import React, { useMemo, useRef } from 'react'
 import styled from 'styled-components'
 import { groupBy } from 'lodash-es'
 import type { Email } from '../types/Email'
@@ -11,6 +11,8 @@ type AuditTableProps = React.PropsWithChildren<{
 }>
 
 function AuditTable({ emails, ...rest }: AuditTableProps) {
+  const recipientsCellRef = useRef<HTMLTableDataCellElement>(null)
+
   const emailsByDate = useMemo(
     () =>
       groupBy<Email>(emails, ({ datetime }) =>
@@ -35,8 +37,8 @@ function AuditTable({ emails, ...rest }: AuditTableProps) {
           {emailGroup.map(({ id, from, to: recipients, subject, datetime }) => (
             <tr key={id}>
               <td>{from}</td>
-              <td>
-                <RecipientsDisplay recipients={recipients} />
+              <td ref={recipientsCellRef}>
+                <RecipientsDisplay recipients={recipients} ref={recipientsCellRef} />
               </td>
               <td>{subject}</td>
               <td className="align-right">
